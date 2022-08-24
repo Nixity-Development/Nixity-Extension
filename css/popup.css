@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap');
+
+body {
+    margin: 0 !important;
+    padding: 0;
+    width: 300px;
+    background-color: #0A192F;
+    border-radius: 5px;
+}
+
+p {
+    color: #A1ACCB;
+    font-family: "Noto Sans", sans-serif;
+}
+
+.logopopup {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.tracker-count {
+    padding-left: 10px;
+    height: 20px;
+}
+
+h1 {
+    color: rgb(204,214,246);
+    font-family: "Noto Sans", sans-serif;;
+    padding-left: 10px;
+    height: 10px;
+}
+
+.search-wrapper {
+    /*padding-top: 8px;*/
+    text-align: center;
+}
+
+.search-wrapper input {
+    width: 270px;
+    border-radius: 5px;
+    height: 30px;
+    font-family: "Noto Sans", sans-serif;
+    color: #A1ACCB;
+    background-color: #172A46;
+    filter: drop-shadow(0px 0px 10px #09162a);
+    border-width: 0px;
+    padding-left: 10px;
+    font-size: 15px;
+    outline: none;
+}
+
+.list {
+    padding-left: 0px;
+    position: relative;
+}
+
+.list hr {
+    border-color: #172A46;
+    color: #172A46;
+}
+
+.list li {
+    list-style-type: none;
+    position: relative;
+    font-size: 15px;
+}
+
+.list li a {
+    line-height: 30px;
+}
+
+.list li a p {
+    text-align: left;
+    margin-left: 20px;
+    width: 100%;
+    transition: margin-left 0.1s ease-out 100ms
+}
+
+.list li a p:hover {
+    margin-left: 30px;
+    cursor: pointer;
+}
+
+.list li a img {
+    right: 20px;
+    top: 10px;
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    vertical-align: middle;
+    filter: invert(100%) sepia(0%) saturate(7443%) hue-rotate(160deg) brightness(99%) contrast(104%);
+}
