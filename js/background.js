@@ -96,7 +96,18 @@ function timeout(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function checkEmails(emails) {
+function compareArrays(a1, a2) {
+    let equalItems = 0;
+    if (a1.length != a2.length) return false;
+
+    for (let i = 0; i < a1.length; i++) {
+        if (a1[i] == a2[i]) equalItems++;
+    }
+
+    if (equalItems == a1.length) return true;
+}
+
+async function checkEmails(emails, breachedBefore) {
     let breachedEmails = [];
     for (let i = 0; i < emails.length; i++) {
         let url = "https://hibp-proxy.denver11.repl.co/search/" + encodeURIComponent(emails[i].address);
@@ -111,34 +122,45 @@ async function checkEmails(emails) {
                 emails[i].isBreached = true;
             };
         } catch {
-            console.log(`Nixity | unable to fetch data for ${emails[i].address}`)
+            console.log(`Nixity | unable to fetch data for ${emails[i].address}`);
         }
         await timeout(1700);
     }
     chrome.storage.sync.get(["breachNotifications"], (items) => {
         if (!items.breachNotifications) return;
-        chrome.notifications.create("nixityBreachNotification", {
+        if (breachedEmails.length == 0) return;
+        if (compareArrays(breachedEmails, breachedBefore) == true) return;
+
+        let randomId = `nixityBreachNotification_${Math.random()}`
+
+        chrome.notifications.create(randomId, {
             type: "basic",
             iconUrl: "../icons/warning.png",
             title: "Warning",
             message: `Nixity has found database breaches that contain ${breachedEmails.length} of your emails.`,
-            priority: 1
+            priority: 0
+        })
+        chrome.notifications.onClicked.addListener((notificationId) => {
+            if (randomId == notificationId) chrome.tabs.create({url: "../html/dashboard.html"});
         })
     })
     chrome.storage.sync.set({
         nixityEmails: emails,
     }, () => console.log("UPDATED BREACHED EMAILS"));
+    chrome.storage.sync.set({
+        breachedBefore: breachedEmails,
+    })
 }
 
-chrome.storage.sync.get(["nixityEmails"], (items) => {
+chrome.storage.sync.get(["nixityEmails", "breachedBefore"], (items) => {
     if (!items.nixityEmails) return;
-    checkEmails(items.nixityEmails);
+    checkEmails(items.nixityEmails, items.breachedBefore || []);
 })
 
 // Runs every 15 minutes (hopefully)
 setInterval(() => {
-    chrome.storage.sync.get(["nixityEmails"], (items) => {
+    chrome.storage.sync.get(["nixityEmails", "breachedBefore"], (items) => {
         if (!items.nixityEmails) return;
-        checkEmails(items.nixityEmails);
+        checkEmails(items.nixityEmails, items.breachedBefore || []);
     })
 }, 900000)
